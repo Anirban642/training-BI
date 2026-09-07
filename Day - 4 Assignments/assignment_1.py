@@ -74,63 +74,51 @@ class Student:
     # Determine PASS/FAIL
     def is_pass(self):
         average = self.calculate_average()
-
         if average >= 40:
             return "PASS"
-
         return "FAIL"
 
 
 class StudentAnalyzer:
-
     # the topper
     def find_topper(self, students):
         topper = None
         highest_average = 0
-
         for student in students:
             average = student.calculate_average()
-
             if average > highest_average:
                 highest_average = average
                 topper = student
-
         return topper.name
 
     # lowest-performing student
     def find_lowest(self, students):
         lowest_student = None
         lowest_average = float("inf")
-
         for student in students:
             average = student.calculate_average()
-
             if average < lowest_average:
                 lowest_average = average
                 lowest_student = student
-
         return lowest_student.name
 
     # Calculate class average
     def calculate_class_average(self, students):
         total = 0
-
         for student in students:
             average = student.calculate_average()
             total += average
-
         class_average = total / len(students)
-
         return class_average
 
 
 # Creating student objects
 students = [
+    Student("Anirban", [81, 91, 31]),
     Student("Tarun", [80, 72, 91]),
     Student("Ashmita", [65, 88, 79]),
     Student("Alinda", [35, 42, 38]),
     Student("Pritam", [79, 41, 26]),
-    Student("Anirban", [81, 91, 31])
 ]
 
 # Creating analyzer object
