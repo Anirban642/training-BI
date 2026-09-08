@@ -14,4 +14,4 @@ class User(metaclass=ForceUppercaseMeta):
     age = 22
 
 print(User.NAME)  # Anirban
-print(User.AGE)   # 22
+print(User.AGE)   # 22 
