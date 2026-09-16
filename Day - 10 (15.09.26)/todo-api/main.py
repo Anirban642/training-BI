@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException, Query
 from schemas import CategoryIn, CategoryOut, TodoIn, TodoOut, TodoUpdate
 
-# from typing import Optional
 
 app = FastAPI()
 
@@ -123,6 +122,15 @@ def get_todos(
     return res[start:end]
 
 
+# stats
+@app.get("/todos/stats")
+def get_todo_stats():
+    total = len(todos)
+    completed = len([todo for todo in todos if todo["isDone"]])
+    pending = total - completed
+    return {"total": total, "completed": completed, "pending": pending}
+
+
 # get todo by id
 @app.get("/todos/{id}", response_model=TodoOut)
 def get_todo(id: int):
@@ -177,3 +185,4 @@ def delete_todos_by_category(category_id: int):
             todos = [todo for todo in todos if todo["category_id"] != category_id]
             return {"message": "Todos deleted"}
     raise HTTPException(status_code=404, detail="Category not found")
+
