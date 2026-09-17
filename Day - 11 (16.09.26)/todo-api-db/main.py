@@ -109,6 +109,18 @@ def get_todos(
     return query.offset(offset).limit(limit).all()
 
 
+# get todo statistics
+@app.get("/todos/stats")
+def get_todo_stats(db: Session = Depends(get_db)):
+    total = db.query(Todo).count()
+    completed = db.query(Todo).filter(Todo.isDone == True).count()
+    pending = total - completed
+    return {
+        "total": total,
+        "completed": completed,
+        "pending": pending
+    }
+
 # get todo by id
 @app.get("/todos/{id}", response_model=TodoOut)
 def get_todo(id: int, db: Session = Depends(get_db)):
@@ -167,14 +179,3 @@ def delete_todos_by_category(id: int, db: Session = Depends(get_db)):
     return {"message": "Todos deleted", "deleted_count": deleted}
 
 
-# get todo statistics
-@app.get("/todos/stats")
-def get_todo_stats(db: Session = Depends(get_db)):
-    total = db.query(Todo).count()
-    completed = db.query(Todo).filter(Todo.isDone == True).count()
-    pending = total - completed
-    return {
-        "total": total,
-        "completed": completed,
-        "pending": pending
-    }
