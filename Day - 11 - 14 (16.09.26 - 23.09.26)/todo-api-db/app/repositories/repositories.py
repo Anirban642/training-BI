@@ -1,10 +1,11 @@
 from sqlalchemy import delete, func, or_, select
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.models import Category, Todo
 
 
-async def create_category(db: AsyncSession, name: str, user_id: int):
+async def create_category(db: AsyncSession, name: str, user_id: UUID):
     try:
         category = Category(name=name, user_id=user_id)
         db.add(category)
@@ -16,19 +17,19 @@ async def create_category(db: AsyncSession, name: str, user_id: int):
         raise
 
 
-async def get_categories(db: AsyncSession, user_id: int):
+async def get_categories(db: AsyncSession, user_id: UUID):
     result = await db.execute(select(Category).where(Category.user_id == user_id))
     return result.scalars().all()
 
 
-async def get_category(db: AsyncSession, id: int, user_id: int):
+async def get_category(db: AsyncSession, id: int, user_id: UUID):
     result = await db.execute(
         select(Category).where(Category.id == id, Category.user_id == user_id)
     )
     return result.scalar_one_or_none()
 
 
-async def get_category_by_name(db: AsyncSession, name: str, user_id: int):
+async def get_category_by_name(db: AsyncSession, name: str, user_id: UUID):
     result = await db.execute(
         select(Category).where(Category.name == name, Category.user_id == user_id)
     )
@@ -36,7 +37,7 @@ async def get_category_by_name(db: AsyncSession, name: str, user_id: int):
 
 
 async def get_category_by_name_except(
-    db: AsyncSession, name: str, id: int, user_id: int
+    db: AsyncSession, name: str, id: UUID, user_id: UUID
 ):
     result = await db.execute(
         select(Category).where(
@@ -73,7 +74,7 @@ async def create_todo(
     title: str,
     description: str,
     category_id: int,
-    user_id: int,
+    user_id: UUID,
 ):
     try:
         todo = Todo(
@@ -94,7 +95,7 @@ async def create_todo(
 
 async def get_todos(
     db: AsyncSession,
-    user_id: int,
+    user_id: UUID,
     completed: bool | None = None,
     search: str | None = None,
     page: int = 1,
@@ -114,7 +115,7 @@ async def get_todos(
     return result.scalars().all()
 
 
-async def get_todo(db: AsyncSession, id: int, user_id: int):
+async def get_todo(db: AsyncSession, id: int, user_id: UUID):
     result = await db.execute(
         select(Todo).where(Todo.id == id, Todo.user_id == user_id)
     )
@@ -127,7 +128,7 @@ async def update_todo(
     title: str,
     description: str,
     isDone: bool,
-    category_id: int,
+    category_id: UUID,
 ):
     try:
         todo.title = title
@@ -152,7 +153,7 @@ async def delete_todo(db: AsyncSession, todo: Todo):
 
 
 async def get_todos_by_category(
-    db: AsyncSession, category_id: int, user_id: int
+    db: AsyncSession, category_id: UUID, user_id: UUID
 ):
     result = await db.execute(
         select(Todo).where(Todo.category_id == category_id, Todo.user_id == user_id)
@@ -161,7 +162,7 @@ async def get_todos_by_category(
 
 
 async def delete_todos_by_category(
-    db: AsyncSession, category_id: int, user_id: int
+    db: AsyncSession, category_id: UUID, user_id: UUID
 ):
     try:
         result = await db.execute(
@@ -174,7 +175,7 @@ async def delete_todos_by_category(
         raise
 
 
-async def get_todo_stats(db: AsyncSession, user_id: int):
+async def get_todo_stats(db: AsyncSession, user_id: UUID):
     total = await db.scalar(
         select(func.count()).select_from(Todo).where(Todo.user_id == user_id)
     )

@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from uuid import UUID
 
 from app.dependencies.db_dependency import DBDependency
 from app.dependencies.user_dependency import CurrentUser
@@ -24,7 +25,7 @@ async def get_categories(db: DBDependency, current_user: CurrentUser):
 
 @router.get("/{id}", response_model=CategoryOut)
 async def get_category(
-    id: int,
+    id: UUID,
     db: DBDependency,
     current_user: CurrentUser,
 ):
@@ -33,7 +34,7 @@ async def get_category(
 
 @router.put("/{id}", response_model=CategoryOut)
 async def update_category(
-    id: int,
+    id: UUID,
     category: CategoryIn,
     db: DBDependency,
     current_user: CurrentUser,
@@ -43,7 +44,7 @@ async def update_category(
 
 @router.delete("/{id}")
 async def delete_category(
-    id: int,
+    id: UUID,
     db: DBDependency,
     current_user: CurrentUser,
 ):
@@ -52,7 +53,7 @@ async def delete_category(
 
 @router.get("/{id}/todos", response_model=list[TodoOut])
 async def get_todos_by_category(
-    id: int,
+    id: UUID,
     db: DBDependency,
     current_user: CurrentUser,
 ):
@@ -61,7 +62,7 @@ async def get_todos_by_category(
 
 @router.delete("/{id}/todos")
 async def delete_todos_by_category(
-    id: int,
+    id: UUID,
     db: DBDependency,
     current_user: CurrentUser,
 ):

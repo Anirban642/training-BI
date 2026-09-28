@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
+import uuid
 
 from app.models.user import User
 from app.config.config import JWT_ALGORITHM, JWT_SECRET
@@ -21,10 +22,10 @@ async def get_current_user(
     )
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        user_id = payload.get("sub")
-        if user_id is None:
+        user_id_str = payload.get("sub")
+        if user_id_str is None:
             raise cred_exception
-        user_id = int(user_id)
+        user_id = uuid.UUID(user_id_str)
     except (JWTError, ValueError):
         raise cred_exception
     

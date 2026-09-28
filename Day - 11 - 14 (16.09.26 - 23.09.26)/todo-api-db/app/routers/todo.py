@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Query
+from uuid import UUID
 
 from app.dependencies.db_dependency import DBDependency
 from app.dependencies.user_dependency import CurrentUser
@@ -49,7 +50,7 @@ async def get_todo_stats(db: DBDependency, current_user: CurrentUser):
 
 @router.get("/{id}", response_model=TodoOut)
 async def get_todo(
-    id: int,
+    id: UUID,
     db: DBDependency,
     current_user: CurrentUser,
 ):
@@ -58,7 +59,7 @@ async def get_todo(
 
 @router.put("/{id}", response_model=TodoOut)
 async def update_todo(
-    id: int,
+    id: UUID,
     todo: TodoUpdate,
     db: DBDependency,
     current_user: CurrentUser,
@@ -76,7 +77,7 @@ async def update_todo(
 
 @router.delete("/{id}")
 async def delete_todo(
-    id: int,
+    id: UUID,
     db: DBDependency,
     current_user: CurrentUser,
 ):
