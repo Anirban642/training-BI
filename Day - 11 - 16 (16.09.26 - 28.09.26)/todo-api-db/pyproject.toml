@@ -1,0 +1,39 @@
+[project]
+name = "async-todo-api"
+version = "0.1.0"
+description = "FastAPI Asynchronous Todo and Category API with PostgreSQL and JWT Auth"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn>=0.30.0",
+    "sqlalchemy>=2.0.0",
+    "asyncpg>=0.29.0",
+    "python-dotenv>=1.0.0",
+    "pydantic[email]>=2.8.0",
+    "python-multipart>=0.0.9",
+    "mailtrap>=2.10.0",
+    "alembic>=1.20.0",
+    "pyjwt>=2.15.1",
+    "pwdlib[argon2]>=0.3.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "httpx>=0.27.0",
+    "black>=24.0.0",
+    "flake8>=7.0.0"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# Tells uv this is a FastAPI app, not a publishable pip library
+[tool.uv]
+package = false
+
+# Tells hatchling the code lives in the app/ folder
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
