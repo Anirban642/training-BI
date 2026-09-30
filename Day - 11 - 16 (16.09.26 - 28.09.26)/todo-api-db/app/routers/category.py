@@ -6,7 +6,7 @@ from app.dependencies.user_dependency import CurrentUser
 from app.schemas.common_schema import SuccessResponse
 from app.schemas.category_schema import CategoryIn, CategoryOut
 from app.schemas.todo_schema import TodoOut
-from app.services import category_service
+from app.services import category_service, todo_service
 from app.utils.responses import success_response
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
@@ -67,7 +67,7 @@ async def get_todos_by_category(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    todos = await category_service.get_todos_by_category(db, id, current_user.id)
+    todos = await todo_service.get_todos_by_category(db, id, current_user.id)
     return success_response(
         data=todos, message="Todos for category retrieved successfully"
     )
@@ -79,7 +79,7 @@ async def delete_todos_by_category(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    res = await category_service.delete_todos_by_category(db, id, current_user.id)
+    res = await todo_service.delete_todos_by_category(db, id, current_user.id)
     return success_response(
         data=res, message="All todos for category deleted successfully"
     )
