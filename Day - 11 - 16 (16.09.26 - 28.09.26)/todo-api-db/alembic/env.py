@@ -12,7 +12,8 @@ from app.config.config import DATABASE_URL
 
 # Import Base and ALL models so Alembic autogenerate can see them
 from app.db.database import Base
-from app.models.models import Category, Todo  # noqa: F401
+from app.models.category import Category
+from app.models.todo import Todo              # noqa: F401
 from app.models.user import User              # noqa: F401
 
 # Alembic Config object — gives access to alembic.ini values

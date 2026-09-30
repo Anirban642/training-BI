@@ -4,8 +4,9 @@ from fastapi import APIRouter
 from app.dependencies.db_dependency import DBDependency
 from app.dependencies.user_dependency import CurrentUser
 from app.schemas.common_schema import SuccessResponse
-from app.schemas.schemas import CategoryIn, CategoryOut, TodoOut
-from app.services import services
+from app.schemas.category_schema import CategoryIn, CategoryOut
+from app.schemas.todo_schema import TodoOut
+from app.services import category_service
 from app.utils.responses import success_response
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
@@ -17,13 +18,13 @@ async def create_category(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    new_cat = await services.create_category(db, category.name, current_user.id)
+    new_cat = await category_service.create_category(db, category.name, current_user.id)
     return success_response(data=new_cat, message="Category created successfully")
 
 
 @router.get("/", response_model=SuccessResponse[list[CategoryOut]])
 async def get_categories(db: DBDependency, current_user: CurrentUser):
-    cats = await services.get_categories(db, current_user.id)
+    cats = await category_service.get_categories(db, current_user.id)
     return success_response(data=cats, message="Categories retrieved successfully")
 
 
@@ -33,7 +34,7 @@ async def get_category(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    cat = await services.get_category(db, id, current_user.id)
+    cat = await category_service.get_category(db, id, current_user.id)
     return success_response(data=cat, message="Category retrieved successfully")
 
 
@@ -44,7 +45,7 @@ async def update_category(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    updated = await services.update_category(
+    updated = await category_service.update_category(
         db, id, category.name, current_user.id
     )
     return success_response(data=updated, message="Category updated successfully")
@@ -56,7 +57,7 @@ async def delete_category(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    await services.delete_category(db, id, current_user.id)
+    await category_service.delete_category(db, id, current_user.id)
     return success_response(data=None, message="Category deleted successfully")
 
 
@@ -66,7 +67,7 @@ async def get_todos_by_category(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    todos = await services.get_todos_by_category(db, id, current_user.id)
+    todos = await category_service.get_todos_by_category(db, id, current_user.id)
     return success_response(
         data=todos, message="Todos for category retrieved successfully"
     )
@@ -78,7 +79,7 @@ async def delete_todos_by_category(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    res = await services.delete_todos_by_category(db, id, current_user.id)
+    res = await category_service.delete_todos_by_category(db, id, current_user.id)
     return success_response(
         data=res, message="All todos for category deleted successfully"
     )

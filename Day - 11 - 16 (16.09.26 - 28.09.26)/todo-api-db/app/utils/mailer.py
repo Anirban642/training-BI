@@ -8,6 +8,7 @@ from app.config.config import (
     MAILTRAP_INBOX_ID,
     MAILTRAP_TOKEN,
 )
+from app.utils.filename import export_filename
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +46,7 @@ def send_todos_export_email(to_email: str, username: str, json_content: str):
         attachments=[
             mt.Attachment(
                 content=encoded_file,
-                filename="todos_export.json",
+                filename=export_filename(username),
                 mimetype="application/json",
                 disposition="attachment",
             )

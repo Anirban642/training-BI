@@ -5,8 +5,8 @@ from fastapi import APIRouter, Query, BackgroundTasks
 from app.dependencies.db_dependency import DBDependency
 from app.dependencies.user_dependency import CurrentUser
 from app.schemas.common_schema import SuccessResponse
-from app.schemas.schemas import TodoIn, TodoOut, TodoStats, TodoUpdate
-from app.services import services
+from app.schemas.todo_schema import TodoIn, TodoOut, TodoStats, TodoUpdate
+from app.services import todo_service
 from app.utils.responses import success_response
 from app.utils.mailer import send_todos_export_email
 
@@ -19,7 +19,7 @@ async def create_todo(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    new_todo = await services.create_todo(
+    new_todo = await todo_service.create_todo(
         db,
         todo.title,
         todo.description,
@@ -40,7 +40,7 @@ async def get_todos(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1),
 ):
-    items, total = await services.get_todos(
+    items, total = await todo_service.get_todos(
         db,
         current_user.id,
         completed,
@@ -66,7 +66,7 @@ async def get_todos(
 
 @router.get("/stats", response_model=SuccessResponse[TodoStats])
 async def get_todo_stats(db: DBDependency, current_user: CurrentUser):
-    stats = await services.get_todo_stats(db, current_user.id)
+    stats = await todo_service.get_todo_stats(db, current_user.id)
     return success_response(data=stats, message="Todo statistics retrieved successfully")
 
 
@@ -76,7 +76,7 @@ async def get_todo(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    todo = await services.get_todo(db, id, current_user.id)
+    todo = await todo_service.get_todo(db, id, current_user.id)
     return success_response(data=todo, message="Todo retrieved successfully")
 
 
@@ -87,7 +87,7 @@ async def update_todo(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    updated = await services.update_todo(
+    updated = await todo_service.update_todo(
         db,
         id,
         todo.title,
@@ -106,12 +106,12 @@ async def delete_todo(
     db: DBDependency,
     current_user: CurrentUser,
 ):
-    await services.delete_todo(db, id, current_user.id)
+    await todo_service.delete_todo(db, id, current_user.id)
     return success_response(data=None, message="Todo deleted successfully")
 
 @router.post("/export", response_model=SuccessResponse[None])
 async def export_todos(background_tasks: BackgroundTasks, db: DBDependency, current_user: CurrentUser):
-    json_data = await services.export_todos_json(db, current_user.id)
+    json_data = await todo_service.export_todos_json(db, current_user.id)
     background_tasks.add_task(
         send_todos_export_email,
         current_user.email,

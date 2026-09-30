@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.errors import ConflictError, InvalidCredentialsError
 from app.models.user import User
 from app.repositories import user_repo
-from app.utils.auth import create_access_token
-from app.utils.password import hash_password, verify_password
+from app.security.auth import create_access_token
+from app.security.password import hash_password, verify_password
 
 
 async def create_user(db: AsyncSession, name: str, email: str, password: str):
