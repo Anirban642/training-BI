@@ -1,21 +1,15 @@
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
-from app.ai_service import analyze_ticket, TicketAnalysis
+from app.ai_service import analyze_ticket, TicketRequest, TicketResponse
+from app.chat_service import chat_with_customer, ChatRequest, ChatResponse
 
 
 app = FastAPI(
     title="AI Customer Support Ticket Analyzer",
     version="1.0.0"
 )
-
-
-class AnalyseRequest(BaseModel):
-    message: str = Field(
-        min_length=3,
-        max_length=1000,
-        description="Customer support ticket message"
-    )
+    
 
 
 @app.get("/")
@@ -27,10 +21,18 @@ def root():
 
 @app.post(
     "/analyse",
-    response_model=TicketAnalysis
+    response_model=TicketResponse
 )
-def analyse(request: AnalyseRequest):
+def analyse(request: TicketRequest):
 
     response = analyze_ticket(request.message)
 
     return response
+
+
+
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest):
+    response = chat_with_customer(request.message)
+
+    return ChatResponse(response=response)

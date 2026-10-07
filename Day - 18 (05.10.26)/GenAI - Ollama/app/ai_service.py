@@ -1,20 +1,30 @@
 from typing import Literal
 from ollama import chat
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
 
-class TicketAnalysis(BaseModel):
+model_name = os.getenv("OLLAMA_MODEL", "llama3:latest")
+
+
+class TicketRequest(BaseModel):
+    message: str = Field(
+        min_length=3,
+        max_length=1000,
+        description="Customer support ticket message"
+    )
+    
+    
+class TicketResponse(BaseModel):
     sentiment: Literal["positive", "negative", "neutral"]
     category: Literal["payment", "refund", "auth", "other"]
     priority: Literal["high", "medium", "low"]
     summary: str
 
 
-model_name = os.getenv("OLLAMA_MODEL", "llama3:latest")
 
 
 SYS_INSTRUCTION = """
@@ -53,7 +63,7 @@ Return only the requested structured data.
 """
 
 
-def analyze_ticket(message: str) -> TicketAnalysis:
+def analyze_ticket(message: str) -> TicketResponse:
 
     response = chat(
         model=model_name,
@@ -67,9 +77,9 @@ def analyze_ticket(message: str) -> TicketAnalysis:
                 "content": f"Analyze this customer support ticket:\n\n{message}"
             }
         ],
-        format=TicketAnalysis.model_json_schema()
+        format=TicketResponse.model_json_schema()
     )
 
-    return TicketAnalysis.model_validate_json(
+    return TicketResponse.model_validate_json(
         response["message"]["content"]
     )
