@@ -18,6 +18,7 @@ class ChatRequest(BaseModel):
     
 class ChatResponse(BaseModel):
     response: str
+    processing_time: float
 
 
 SYS_INSTRUCTION = """ 
